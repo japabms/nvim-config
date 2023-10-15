@@ -280,7 +280,7 @@ vim.o.termguicolors = true
 
 local function change_theme()
     local hour = tonumber(os.date("%H"));
-    if(hour < 19) then
+    if(hour >= 6 and hour < 19) then
         vim.o.background = "light"
         vim.g.zenwritten_lightness = "dim"
         vim.cmd.colorscheme("zenwritten")
@@ -331,7 +331,8 @@ vim.keymap.set('x', '<leader>p', "\"_dP")
 
 
 -- NeoTree  
-vim.keymap.set('n', '<leader><tab>', '<cmd>Neotree toggle left<cr>')
+vim.keymap.set('n', '<tab>', '<cmd>Neotree toggle current<cr>')
+vim.keymap.set('n', '<leader><tab>', '<cmd>Neotree toggle current git_status<cr>')
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -362,7 +363,7 @@ pcall(require('telescope').load_extension, 'fzf')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader><space>', '<cmd>Telescope buffers initial_mode=normal<cr>', { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
     -- You can pass additional configuration to telescope to change theme, layout, etc.
     require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
