@@ -127,9 +127,10 @@ require('lazy').setup({
         'lukas-reineke/indent-blankline.nvim',
         -- Enable `lukas-reineke/indent-blankline.nvim`
         -- See `:help indent_blankline.txt`
+        main = "ibl",
         opts = {
-            char = '┊',
-            show_trailing_blankline_indent = false,
+            -- char = '┊',
+            -- show_trailing_blankline_indent = true,
         },
     },
 
@@ -277,22 +278,23 @@ vim.o.relativenumber = true
 
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
+vim.g.zenwritten_transparent_background = false
+vim.cmd.colorscheme("slate")
 
-local function change_theme()
-    local hour = tonumber(os.date("%H"));
-    if(hour >= 6 and hour < 19) then
-        vim.o.background = "light"
-        vim.g.zenwritten_lightness = "dim"
-        vim.cmd.colorscheme("zenwritten")
-        lualine_setup("Tomorrow", "#000000");
-    else
-        vim.o.background = "dark"
-        vim.g.zenwritten_darkness = "warm"
-        vim.cmd.colorscheme("zenwritten")
-        lualine_setup("moonfly", "#c2c0bc");
-    end
-    vim.g.zenwritten_italic_comments = false
-end
+-- local function change_theme()
+--     local hour = tonumber(os.date("%H"));
+--     if(hour >= 6 and hour < 19) then
+--         vim.o.background = "light"
+--         vim.g.zenwritten_lightness = "dim"
+--         vim.cmd.colorscheme("zenwritten")
+--         lualine_setup("Tomorrow", "#000000");
+--     else
+--         vim.o.background = "dark"
+--         vim.g.zenwritten_darkness = "warm"
+--         lualine_setup("moonfly", "#c2c0bc");
+--     end
+--     vim.g.zenwritten_italic_comments = false
+-- end
 
 
 -- [[ Basic Keymaps ]]
@@ -331,8 +333,8 @@ vim.keymap.set('x', '<leader>p', "\"_dP")
 
 
 -- NeoTree  
-vim.keymap.set('n', '<tab>', '<cmd>Neotree toggle current<cr>')
-vim.keymap.set('n', '<leader><tab>', '<cmd>Neotree toggle current git_status<cr>')
+vim.keymap.set('n', '<tab>', '<cmd>Neotree toggle<cr>')
+vim.keymap.set('n', '<leader><tab>', '<cmd>Neotree toggle git_status<cr>')
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -483,7 +485,7 @@ local on_attach = function(_, bufnr)
 
     -- See `:help K` for why this keymap
     nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-    nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+    -- nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
     -- Lesser used LSP functionality
     nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -614,9 +616,39 @@ cmp.setup {
     },
 }
 
-change_theme();
+-- changing indent_blankline indent char.
+require("ibl.config").config.indent.char = '┊'
+
+-- bufferline setup
+require("bufferline").setup {
+    options = {
+        mode = "buffers",
+        themable = true,
+        numbers = "buffer_id",
+        diagnostics = "nvim_lsp",
+        color_icons = true,
+        separator_style = "slant",
+        offsets = {
+            {
+                filetype = "neo-tree",
+                text = "File Explorer",
+                highlight = "Directory",
+                text_align = "left",
+            }
+        }
+    }
+}
+-- bufferline remaps
+vim.keymap.set('n', 'L', "<cmd>BufferLineCycleNext<cr>");
+vim.keymap.set('n', 'H', "<cmd>BufferLineCyclePrev<cr>");
+vim.keymap.set('n', '<leader>bl', "<cmd>BufferLineCloseRight<cr>");
+vim.keymap.set('n', '<leader>bh', "<cmd>BufferLineCloseLeft<cr>");
+vim.keymap.set('n', '<leader>bp', "<cmd>BufferLineTogglePin<cr>");
+
+
+-- change_theme();
 
 -- Checks every 1 minuto to change the theme to black
-vim.fn.timer_start(60000, function()
-    change_theme()
-end, {["repeat"] = -1})
+-- vim.fn.timer_start(60000, function()
+--     change_theme()
+-- end, {["repeat"] = -1})
