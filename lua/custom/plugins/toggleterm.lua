@@ -1,9 +1,9 @@
-return {
+  return {
   'akinsho/toggleterm.nvim',
   version = "*",
   config = function()
     require('toggleterm').setup {
-      open_mapping = [[<A-1>]],
-    }
+        open_mapping = [[<C-a>]]
+      }
   end,
 }
