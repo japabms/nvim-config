@@ -113,7 +113,7 @@ require('lazy').setup({
         -- See `:help lualine.txt`
         opts = {
             options = {
-                icons_enabled = false,
+                icons_enabled = true,
                 component_separators = { left = '', right = ''},
                 section_separators = { left = '', right = ''},
             },
@@ -217,7 +217,7 @@ require('lualine').setup {
                 end
                 return msg
             end,
-            icon = ' ',
+            icon = '',
             color = { fg = lsptxtcolor, gui = 'bold' },
 
         }},
@@ -279,7 +279,11 @@ vim.o.relativenumber = true
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 vim.g.zenwritten_transparent_background = false
+
+vim.opt.showmode = false
+
 vim.cmd.colorscheme("slate")
+lualine_setup("modus-vivendi", "#c2c0bc");
 
 -- local function change_theme()
 --     local hour = tonumber(os.date("%H"));
@@ -647,8 +651,7 @@ vim.keymap.set('n', '<leader>bp', "<cmd>BufferLineTogglePin<cr>");
 
 
 -- change_theme();
-
 -- Checks every 1 minuto to change the theme to black
 -- vim.fn.timer_start(60000, function()
 --     change_theme()
--- end, {["repeat"] = -1})
+-- end, {["repeat"] = 7})
