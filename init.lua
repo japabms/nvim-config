@@ -104,10 +104,6 @@ require('lazy').setup({
         },
     },
     {
-        "mcchrish/zenbones.nvim",
-        dependencies = "rktjmp/lush.nvim"
-    },
-    {
         -- Set lualine as statusline
         'nvim-lualine/lualine.nvim',
         -- See `:help lualine.txt`
@@ -156,6 +152,10 @@ require('lazy').setup({
                 end,
             },
         },
+    },
+
+    {
+        "ellisonleao/gruvbox.nvim", priority = 1000, config = true,
     },
 
     {
@@ -278,12 +278,37 @@ vim.o.relativenumber = true
 
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
-vim.g.zenwritten_transparent_background = false
 
 vim.opt.showmode = false
 
-vim.cmd.colorscheme("slate")
-lualine_setup("modus-vivendi", "#c2c0bc");
+vim.o.background = "dark"
+require("gruvbox").setup {
+    terminal_colors = true, -- add neovim terminal colors
+    undercurl = true,
+    underline = true,
+    bold = true,
+    italic = {
+        strings = false,
+        emphasis = false,
+        comments = false,
+        operators = false,
+        folds = false,
+    },
+    strikethrough = true,
+    invert_selection = false,
+    invert_signs = false,
+    invert_tabline = false,
+    invert_intend_guides = false,
+    inverse = true, -- invert background for search, diffs, statuslines and errors
+    contrast = "soft", -- can be "hard", "soft" or empty string
+    palette_overrides = {},
+    overrides = {},
+    dim_inactive = false,
+    transparent_mode = false,
+}
+
+vim.cmd.colorscheme("morning")
+lualine_setup("ayu_light");
 
 -- local function change_theme()
 --     local hour = tonumber(os.date("%H"));
@@ -390,7 +415,7 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim' },
+    ensure_installed = { 'c','go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim' },
     autotag = {
         enable = true
     },
@@ -462,13 +487,14 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
-local on_attach = function(_, bufnr)
+local on_attach = function(client, bufnr)
     -- NOTE: Remember that lua is a real programming language, and as such it is possible
     -- to define small helper and utility functions so you don't have to repeat yourself
     -- many times.
     --
     -- In this case, we create a function that lets us more easily define mappings specific
     -- for LSP related items. It sets the mode, buffer and description for us each time.
+    client.server_capabilities.semanticTokensProvider = nil
     local nmap = function(keys, func, desc)
         if desc then
             desc = 'LSP: ' .. desc
@@ -621,7 +647,8 @@ cmp.setup {
 }
 
 -- changing indent_blankline indent char.
-require("ibl.config").config.indent.char = '┊'
+-- require("ibl.config").config.indent.char = '┊'
+require("ibl.config").config.enabled = false
 
 -- bufferline setup
 require("bufferline").setup {
@@ -648,7 +675,13 @@ vim.keymap.set('n', 'H', "<cmd>BufferLineCyclePrev<cr>");
 vim.keymap.set('n', '<leader>bl', "<cmd>BufferLineCloseRight<cr>");
 vim.keymap.set('n', '<leader>bh', "<cmd>BufferLineCloseLeft<cr>");
 vim.keymap.set('n', '<leader>bp', "<cmd>BufferLineTogglePin<cr>");
+vim.keymap.set('n', '<leader>bc', "<cmd>bdelete<cr>");
 
+-- setting some highlight groups to the morning, because TS highlight was make everything too colorful 
+vim.api.nvim_set_hl(0, "@variable.c", {link = "black"})
+vim.api.nvim_set_hl(0, "@function.call.c", {link = "black"})
+vim.api.nvim_set_hl(0, "@constant.c", {link = "black"})
+vim.api.nvim_set_hl(0, "@property.c", {link = "black"})
 
 -- change_theme();
 -- Checks every 1 minuto to change the theme to black
